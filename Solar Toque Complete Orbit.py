@@ -8,7 +8,7 @@ CR = 2
 GscoverR2 = 590 # /m^2
 c = 3*10**6 # m/s
 
-dtheta = np.pi/10
+dtheta = np.pi/50
 theta = np.arange(0, 2*np.pi + dtheta, dtheta) # Angle in orbit
 
 A_bus = 2.045 # m^2
@@ -22,14 +22,6 @@ def cross_prod(a, b):
             a[0]*b[1] - a[1]*b[0]]
 
     return result
-
-def rounding(A):
-    for i in range(len(A)):
-        for j in range(len(A[i])):
-            if abs(A[i][j]) < 10**-15 :
-                A[i][j] = 0
-
-    return A
 
 #%% Rotating Force unit vector 
 
@@ -121,6 +113,7 @@ F_bus = []
 for i in range(len(theta)):
     F_bus.append(n_F[i] * CR * GscoverR2 / c * A_bus2[i])
 
+
 tau_bus = []
 for i in range(len(theta)):
     tau_bus.append(cross_prod(r_bus2[i], F_bus[i]))
@@ -157,65 +150,31 @@ for i in range(len(theta)):
     tau_array1.append(cross_prod(r_array1, F_array[i]))
     tau_array2.append(cross_prod(r_array2, F_array[i]))
 
-#%% Total
+#%% Total torque per axis
 
-tau_total_arrays = []
-for i in tau_array1:
-    for j in tau_array2:
-        sum = [x + y for x, y in zip(i, j)]
-        tau_total_arrays.append(sum)
-
-tau_total_bus_ant = []
-for i in tau_bus:
-    for j in tau_ant:
-        sum = [x + y for x, y in zip(i, j)]
-        tau_total_bus_ant.append(sum)
-
-tau_total = []
-for i in tau_total_arrays:
-    for j in tau_total_bus_ant:
-        sum = [x + y for x, y in zip(i, j)]
-        tau_total.append(sum)
-
-tau_bus = rounding(tau_bus)
-tau_ant = rounding(tau_ant)
-tau_array1 = rounding(tau_array1)
-tau_array2 = rounding(tau_array2)
-tau_total = rounding(tau_total)
-
-print(tau_total[0], tau_total[-1])
-
-# Finding max values
-lstx = []
-lsty = []
-lstz = []
-for i in tau_total:
-    lstx.append(i[0])
-    lsty.append(i[1])
-    lstz.append(i[2])
-tau_x_max = max(lstx)
-tau_y_max = max(lsty)
-tau_z_max = max(lstz)
-
-indexx = int(0)
-for i in theta:
-    if i - dtheta/2 < pi/2 < i + dtheta/2:
-        indexy = int(i/dtheta)
-        indexz = int(i/dtheta)
-
-print("Maximum $𝜏_x$ =", round(lstx[indexx]*1000, 5), "mNm")    
-print("Maximum $𝜏_y$ =", round(lsty[indexy]*1000, 5), "mNm")
-print("Maximum $𝜏_z$ =", round(lstz[indexz]*1000, 5), "mNm")
-
-#%% Plotting
+# THIS IS PART OF A VERY BIG COMMENT
+# THIS IS PART OF A VERY BIG COMMENT
+# THIS IS PART OF A VERY BIG COMMENT
+# THIS IS PART OF A VERY BIG COMMENT
+# THIS IS PART OF A VERY BIG COMMENT
 
 tau_total_x = []
 tau_total_y = []
 tau_total_z = []
 for i in range(len(theta)):
-    tau_total_x.append(tau_total[i][0]*1000)
-    tau_total_y.append(tau_total[i][1]*1000)
-    tau_total_z.append(tau_total[i][2]*1000)
+    tau_total_x.append((tau_array1[i][0] + tau_array2[i][0] + tau_bus[i][0] + tau_ant[i][0])*1000)
+    tau_total_y.append((tau_array1[i][1] + tau_array2[i][1] + tau_bus[i][1] + tau_ant[i][1])*1000)
+    tau_total_z.append((tau_array1[i][2] + tau_array2[i][2] + tau_bus[i][2] + tau_ant[i][2])*1000)
+    
+# THIS IS PART OF A VERY BIG COMMENT
+# THIS IS PART OF A VERY BIG COMMENT
+# THIS IS PART OF A VERY BIG COMMENT
+# THIS IS PART OF A VERY BIG COMMENT
+# THIS IS PART OF A VERY BIG COMMENT
+# THIS IS PART OF A VERY BIG COMMENT
+    
+
+#%% Plotting
 
 fig, (ax1, ax2) = plt.subplots(1, 2)
 ax1.plot(theta, tau_total_x, c="r", linestyle = "dashed", label="$𝜏_x$")
